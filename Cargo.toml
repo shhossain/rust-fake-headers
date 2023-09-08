@@ -8,7 +8,7 @@ homepage = "https://github.com/shhossain/rust-fake-headers"
 readme = "README.md"
 
 # Add description and author
-description = "Generate fake HTTP headers for user agents"
+description = "Generate fake HTTP headers for your HTTP requests."
 authors = ["shhossain"]
 
 # Add dependencies
