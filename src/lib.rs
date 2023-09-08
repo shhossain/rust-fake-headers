@@ -171,6 +171,46 @@ fn linux() -> String {
     format!("X11; Linux {}", ver[rand::thread_rng().gen_range(0..=2)])
 }
 
+fn make_header() -> std::collections::HashMap<String, String> {
+    let mut headers = std::collections::HashMap::new();
+
+    if rand::thread_rng().gen_range(0..=1) == 1 {
+        headers.insert(
+            "Accept-Encoding".to_string(),
+            "gzip, deflate, br".to_string(),
+        );
+    }
+
+    if rand::thread_rng().gen_range(0..=1) == 1 {
+        headers.insert(
+            "Accept-Language".to_string(),
+            "en-US;q=0.5,en;q=0.3".to_string(),
+        );
+    }
+
+    if rand::thread_rng().gen_range(0..=1) == 1 {
+        headers.insert("Cache-Control".to_string(), "max-age=0".to_string());
+    }
+
+    if rand::thread_rng().gen_range(0..=1) == 1 {
+        headers.insert("DNT".to_string(), "1".to_string());
+    }
+
+    if rand::thread_rng().gen_range(0..=1) == 1 {
+        headers.insert("Upgrade-Insecure-Requests".to_string(), "1".to_string());
+    }
+
+    if rand::thread_rng().gen_range(0..=1) == 1 {
+        headers.insert("Referer".to_string(), "https://google.com".to_string());
+    }
+
+    if rand::thread_rng().gen_range(0..=1) == 1 {
+        headers.insert("Pragma".to_string(), "no-cache".to_string());
+    }
+
+    headers
+}
+
 pub struct Headers {
     browser: String,
     os: String,
@@ -191,26 +231,29 @@ impl Headers {
     }
 
     pub fn generate(&self) -> std::collections::HashMap<String, String> {
-        let browser = self.browser.clone();
-        let platform = self.os.clone();
-
-        let mut headers = std::collections::HashMap::new();
-        headers.insert("Accept".to_string(), "*/*".to_string());
-        headers.insert("Connection".to_string(), "keep-alive".to_string());
-        headers.insert(
-            "User-Agent".to_string(),
-            browser.replace("%PLAT%", &platform),
-        );
+        let mut headers = Headers::empty();
+        let mut browser: String = chrome();
+        let mut os: String = windows();
 
         if self.headers {
-            headers.insert(
-                "Accept-Encoding".to_string(),
-                "gzip, deflate, br".to_string(),
-            );
-            headers.insert("Accept-Language".to_string(), "en-US,en;q=0.9".to_string());
-            headers.insert("Cache-Control".to_string(), "no-cache".to_string());
-            headers.insert("Pragma".to_string(), "no-cache".to_string());
+            headers = make_header();
         }
+        headers.insert("Accept".to_string(), "*/*".to_string());
+        headers.insert("Connection".to_string(), "keep-alive".to_string());
+
+        if self.browser == "firefox" {
+            browser = firefox();
+        } else if self.browser == "opera" {
+            browser = opera();
+        }
+
+        if self.os == "mac" {
+            os = macos();
+        } else if self.os == "linux" {
+            os = linux();
+        }
+
+        headers.insert("User-Agent".to_string(), browser.replace("%PLAT%", &os));
 
         headers
     }
