@@ -1,5 +1,5 @@
 # Fake Headers for rust
-This is create from python fake_headers
+This is created from python `fake_headers` module. It generates random user-agent and other headers for your http requests.
 
 ## Usage
 ```rust
