@@ -1,9 +1,8 @@
 [package]
 name = "fake_headers"
-version = "0.0.1"
+version = "0.0.2"
 edition = "2021"
 license = "MIT"
-license-file = "LICENSE"
 repository = "https://github.com/shhossain/rust-fake-headers"
 homepage = "https://github.com/shhossain/rust-fake-headers"
 readme = "README.md"
