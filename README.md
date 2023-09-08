@@ -3,19 +3,38 @@ This is create from python fake_headers
 
 ## Usage
 ```rust
-fn main() {
-    
-    let random_browser = random_browser();
-    let random_os = random_os();
+use fake_headers::Headers;
+use reqwest::header::HeaderMap;
 
-    let headers = Headers {
-        browser: random_browser,
-        os: random_os,
-        headers: false,
+fn main() {
+
+    let fheaders = Headers {
+        browser: 'chrome', # `chrome`, `firefox` or `opera`
+        os: `win`, # `win`, `linux` or `mac`
+        headers: true,
     };
 
-    let generated_headers = headers.generate();
-
+    let generated_headers = fheaders.generate();
     println!("{:?}", generated_headers);
+
+    // or get random header
+    let random_header = Headers::default().generate();
+    println!("{:?}", random_header);
+
+    // add headers to reqwest
+    let mut headers = reqwest::header::HeaderMap::new();
+    for (key, value) in random_header {
+        let header_name = reqwest::header::HeaderName::from_bytes(key.as_bytes()).unwrap();
+        let header_value = reqwest::header::HeaderValue::from_str(&value).unwrap();
+        headers.insert(header_name, header_value);
+    }
+
+    let client = reqwest::Client::builder()
+        .default_headers(headers)
+        .build()
+        .unwrap();
+
+    let res = client.get("https://httpbin.org/headers").send().unwrap();
+    println!("{:?}", res.text().unwrap());
 }
 ```

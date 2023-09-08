@@ -232,8 +232,8 @@ impl Headers {
 
     pub fn generate(&self) -> std::collections::HashMap<String, String> {
         let mut headers = Headers::empty();
-        let mut browser: String = chrome();
-        let mut os: String = windows();
+        let mut browser: String = self.browser.clone();
+        let mut os: String = self.os.clone();
 
         if self.headers {
             headers = make_header();
@@ -245,12 +245,17 @@ impl Headers {
             browser = firefox();
         } else if self.browser == "opera" {
             browser = opera();
+        } else if self.browser == "chrome" {
+            browser = chrome();
         }
+
 
         if self.os == "mac" {
             os = macos();
         } else if self.os == "linux" {
             os = linux();
+        } else if self.os == "windows" {
+            os = windows();
         }
 
         headers.insert("User-Agent".to_string(), browser.replace("%PLAT%", &os));
